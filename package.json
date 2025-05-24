@@ -1,0 +1,54 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "axios": "^1.9.0",
+    "cloudconvert": "^3.0.0",
+    "cors": "^2.8.5",
+    "docx": "^9.5.0",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "image-size": "^2.0.2",
+    "image-to-pdf": "^3.0.2",
+    "jspdf": "^3.0.1",
+    "libreoffice-convert": "^1.6.1",
+    "mammoth": "^1.9.0",
+    "multer": "^1.4.5-lts.2",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1",
+    "pdf-poppler": "^0.2.1",
+    "pdf-powerpoint": "^1.2.1",
+    "pdf2docx": "^0.0.0",
+    "pdf2json": "^3.1.5",
+    "pdf2pic": "^3.1.4",
+    "pdfkit": "^0.17.1",
+    "pptx2pdf": "^1.0.10",
+    "pptxgenjs": "^4.0.0",
+    "puppeteer": "^24.7.2",
+    "react-canvas": "^1.2.1",
+    "sharp": "^0.34.1",
+    "string-similarity": "^4.0.4",
+    "tesseract.js": "^6.0.1",
+    "word2pdf": "^0.0.1-security",
+    "ws": "^8.18.1",
+    "xlsx": "^0.18.5"
+  },
+  "engines": {
+    "node": "20.19.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.5"
+  }
+}
