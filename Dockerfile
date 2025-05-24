@@ -12,9 +12,17 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Set sharp environment to avoid broken binary download
+ENV npm_config_sharp_binary_host="" \
+    npm_config_sharp_libvips_binary_host=""
 
+# Copy package files first for layer caching
+COPY package*.json ./
+
+# Install dependencies (build sharp from source here)
+RUN npm install --build-from-source=sharp
+
+# Copy all remaining source files
 COPY . .
 
 EXPOSE 5000
