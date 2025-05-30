@@ -1,0 +1,4 @@
+# Ignore dependencies and large folders
+node_modules/
+uploads/
+test-files/

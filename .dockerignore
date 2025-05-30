@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+Dockerfile*
+.dockerignore
+uploads/
+outputs/
+test-output/
+tests/
+*.test.js
+temp_slides_*
+*.log
+.DS_Store

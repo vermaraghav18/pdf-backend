@@ -1,29 +1,41 @@
-FROM node:20-bullseye
+# ✅ 1. Use slim base image
+FROM node:18-slim
 
-# Install required Linux tools
-RUN apt-get update && apt-get install -y \
-    ghostscript \
-    qpdf \
-    poppler-utils \
-    tesseract-ocr \
-    libreoffice \
-    imagemagick \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# ✅ 2. Set Puppeteer env to skip Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
+# ✅ 3. Set working directory
 WORKDIR /app
 
-# Set sharp environment to avoid broken binary download
-ENV npm_config_sharp_binary_host="" \
-    npm_config_sharp_libvips_binary_host=""
+# ✅ 4. Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ghostscript \
+    poppler-utils \
+    qpdf \
+    libreoffice \
+    unoconv \
+    imagemagick \
+    graphicsmagick \
+    fonts-liberation \
+    fonts-dejavu \
+    libvips-dev \
+    curl && \
+    sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml || true && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copy package files first for layer caching
+# ✅ 5. Copy package files separately for layer caching
 COPY package*.json ./
 
-# Install dependencies (build sharp from source here)
-RUN npm install --build-from-source=sharp
+# ✅ 6. Install production dependencies (puppeteer skipped Chromium)
+RUN npm install --omit=dev
 
-# Copy all remaining source files
+# ✅ 7. Copy rest of backend code (after dependencies)
 COPY . .
 
+# ✅ 8. Expose backend port
 EXPOSE 5000
+
+# ✅ 9. Start the server
 CMD ["node", "server.js"]

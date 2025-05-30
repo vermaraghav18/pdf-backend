@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\PC\\Downloads\\ilovepdf-clone\\backend\\logs\\.ab21c699f8ca4b8b1151bfb2cd3fad33317165f7-audit.json",
+    "files": [
+        {
+            "date": 1748415584419,
+            "name": "C:\\Users\\PC\\Downloads\\ilovepdf-clone\\backend\\logs\\requests-2025-05-28.log",
+            "hash": "0f13087e4a40e5e28f6715228c0c2152c6f85b8ee8a304737f19c84787226a28"
+        },
+        {
+            "date": 1748531198704,
+            "name": "C:\\Users\\PC\\Downloads\\ilovepdf-clone\\backend\\logs\\requests-2025-05-29.log",
+            "hash": "381407cc0bfd9bc7bece8c6056ab514e1170e254377a2c5fa0264dee0a194f4c"
+        }
+    ],
+    "hashType": "sha256"
+}

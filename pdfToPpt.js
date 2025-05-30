@@ -1,55 +1,56 @@
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const PptxGenJS = require('pptxgenjs');
-const { convert } = require('pdf-poppler');
-const { getImageSizeInInches } = require('./utils/imageSizeHelper'); // ✅ use helper
+// 🧪 Diagnostic wrapper to isolate import issues
+try {
+  console.log("📦 Entering pdfToPpt.js");
 
-async function convertPdfToPpt(inputPath) {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ppt-temp-'));
+  const fs = require("fs");
+  const path = require("path");
+  const { fromPath } = require("pdf2pic");
+  const PptxGenJS = require("pptxgenjs");
+  const sharp = require("sharp");
 
-  const options = {
-    format: 'png',
-    out_dir: tempDir,
-    out_prefix: 'slide',
-    page: null,
+  console.log("✅ All dependencies loaded successfully");
+
+  // Core conversion logic
+  const convertPdfToPpt = async (pdfPath, outputPath) => {
+    console.log("🔄 Converting PDF to images...");
+    const options = {
+      density: 150,
+      saveFilename: "slide",
+      savePath: "./temp_slides",
+      format: "png",
+      width: 1024,
+      height: 768,
+    };
+
+    await fs.promises.mkdir(options.savePath, { recursive: true });
+
+    const storeAsImage = fromPath(pdfPath, options);
+    const result = await storeAsImage.bulk(-1, true);
+
+    console.log(`🖼️ Extracted ${result.length} slides`);
+
+    const pptx = new PptxGenJS();
+
+    for (const slide of result) {
+      const pptSlide = pptx.addSlide();
+      pptSlide.addImage({
+        path: slide.path,
+        x: 0,
+        y: 0,
+        w: 10,
+        h: 5.63,
+      });
+    }
+
+    await pptx.writeFile({ fileName: outputPath });
+    console.log("✅ PPTX created at:", outputPath);
+
+    // Optional: clean up temporary slide images
+    result.forEach(img => fs.unlink(img.path, () => {}));
   };
 
-  await convert(inputPath, options);
-
-  const imageFiles = fs
-    .readdirSync(tempDir)
-    .filter(file => file.endsWith('.png'))
-    .sort();
-
-  const pptx = new PptxGenJS();
-
-  imageFiles.forEach(file => {
-    const fullPath = path.join(tempDir, file);
-    const { widthInInches, heightInInches } = getImageSizeInInches(fullPath);
-
-    pptx.addSlide().addImage({
-      path: fullPath,
-      x: 0,
-      y: 0,
-      w: widthInInches,
-      h: heightInInches,
-    });
-  });
-
-  let pptxBuffer;
-  try {
-    pptxBuffer = await pptx.write('nodebuffer');
-  } finally {
-    try {
-      imageFiles.forEach(file => fs.unlinkSync(path.join(tempDir, file)));
-      fs.rmdirSync(tempDir);
-    } catch (cleanupErr) {
-      console.error("⚠️ Cleanup error:", cleanupErr);
-    }
-  }
-
-  return pptxBuffer;
+  module.exports = { convertPdfToPpt };
+} catch (err) {
+  console.error("❌ Error in top-level of pdfToPpt.js");
+  console.error(err.stack || err.message || err);
 }
-
-module.exports = { convertPdfToPpt };
