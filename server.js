@@ -1,8 +1,19 @@
+// Load environment variables
+require('dotenv').config();
+
+// Core packages
 const express = require('express');
-const cors = require('cors');
 const path = require('path');
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");  // <-- ADD THIS
+
+// Security + Rate limiting
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
+// CORS
+const cors = require('cors');
+
+// Initialize Express
+const app = express();
 
 // 🔴 RUNTIME FOLDER SAFETY START 🔴
 const fs = require('fs');
@@ -51,8 +62,12 @@ const downloadRouter = require('./routes/downloadRouter');
 const deleteTempFiles = require('./routes/deleteTempFiles');
 
 // Initialize Express
-const app = express();
 const PORT = process.env.PORT || 5000;
+
+app.use(helmet());
+
+app.use(cors());
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
@@ -64,8 +79,9 @@ const limiter = rateLimit({
 app.use(limiter);
 
 
+
 // Middleware
-app.use(cors());
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -109,7 +125,7 @@ app.use('/api/download', downloadRouter);
 app.use('/api/delete-temp', deleteTempFiles);
 app.use('/api/status', statusCheck);
 
-app.use(helmet());
+
 
 
 
